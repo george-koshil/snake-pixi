@@ -1,23 +1,22 @@
 import * as PIXI from 'pixi.js';
-import { GameMode } from './GameMode';
 
 export class GUI {
-  private app: PIXI.Application;
-  private bestScoreLabel: PIXI.Text = null!;
-  private currentScoreLabel: PIXI.Text = null!;
-  private menuButton: PIXI.Container = null!;
-  private playButton: PIXI.Container = null!;
-  private exitButton: PIXI.Container = null!;
-  private modeSelectors: PIXI.Graphics[] = [];
-  private selectedMode: GameMode = GameMode.Classic;
-  private modesContainer: PIXI.Container = null!;
+   app;
+   bestScoreLabel = null;
+   currentScoreLabel = null;
+   menuButton = null;
+   playButton = null;
+   exitButton = null;
+   modeSelectors = [];
+   selectedMode;
+   modesContainer;
 
-  constructor(app: PIXI.Application) {
+  constructor(app) {
     this.app = app;
     this.createGUI();
   }
 
-  private createGUI() {
+   createGUI() {
     const style = new PIXI.TextStyle({
       fontFamily: 'Arial',
       fontSize: 24,
@@ -58,7 +57,7 @@ export class GUI {
     this.exitButton.on('pointerdown', () => this.exitGame());
   }
 
-  private createButton(text: string, x: number, y: number, style: PIXI.TextStyle): PIXI.Container {
+   createButton(text, x, y, style) {
     const container = new PIXI.Container();
 
     const background = new PIXI.Graphics();
@@ -77,7 +76,7 @@ export class GUI {
     return container;
   }
 
-  private createModeSelector() {
+   createModeSelector() {
     const style = new PIXI.TextStyle({ fontFamily: 'Arial', fontSize: 24, fill: 'white' });
     const modes = ['Classic', 'No Die', 'Walls', 'Portal', 'Speed'];
     let yOffset = 150;
@@ -101,8 +100,8 @@ export class GUI {
     });
   }
 
-  private selectMode(index: number) {
-    this.selectedMode = index as GameMode;
+   selectMode(index) {
+    this.selectedMode = index;
     this.modeSelectors.forEach((selector, idx) => {
       selector.clear();
       selector.beginFill(idx === index ? 0x0000FF : 0xFFFFFF);
@@ -111,7 +110,7 @@ export class GUI {
     });
   }
 
-  private startGame() {
+   startGame() {
     console.log("Game starting with mode:", this.selectedMode);
     this.modesContainer.visible = false;  
     this.playButton.visible = false;    
@@ -120,7 +119,7 @@ export class GUI {
     this.app.stage.emit('game-start', this.selectedMode);  
   }
 
-  public showMenu() {
+   showMenu() {
     this.modesContainer.visible = true;  
     this.playButton.visible = true;       
     this.exitButton.visible = true;     
@@ -131,16 +130,16 @@ export class GUI {
   }
   
 
-  private exitGame() {
+   exitGame() {
     console.log("Exiting game...");
     window.close(); 
   }
 
-  public updateCurrentScore(score: number) {
+   updateCurrentScore(score) {
     this.currentScoreLabel.text = `Current Score: ${score}`;
   }
 
-  public getSelectedMode(): GameMode {
+   getSelectedMode() {
     return this.selectedMode;
   }
 }

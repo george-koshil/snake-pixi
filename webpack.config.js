@@ -1,9 +1,6 @@
-// webpack.config.js
-
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
@@ -21,14 +18,13 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
-        use: 'ts-loader',
+        test: /\.js$/, // Обробка тільки .js файлів
         exclude: /node_modules/
       }
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.js'] // Видаляємо .ts, оскільки TypeScript більше не використовується
   },
   output: {
     filename: 'bundle.[contenthash].js',
@@ -40,19 +36,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Snake Game',
       template: 'public/index.html'
-    }),
-    new ForkTsCheckerWebpackPlugin({
-      async: false, // This makes sure that TypeScript errors don't stop the build process
-      typescript: {
-        diagnosticOptions: {
-          semantic: true,
-          syntactic: true,
-        },
-      },
-      logger: {
-        infrastructure: 'silent', // Disable logging of errors to the console
-        issues: 'silent',         // Disable logging of issues to the console
-      },
-    }),
+    })
   ]
 };

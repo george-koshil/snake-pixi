@@ -1,12 +1,12 @@
 import * as PIXI from "pixi.js";
 
 export class Snake {
-  private segments: PIXI.Graphics[] = [];
-  private direction: { x: number; y: number };
-  private tileSize: number;
-  private gameContainer: PIXI.Container;
+  segments = [];
+  direction;
+  tileSize;
+  gameContainer;
 
-  constructor(gameContainer: PIXI.Container, tileSize: number) {
+  constructor(gameContainer, tileSize) {
     this.tileSize = tileSize;
     this.gameContainer = gameContainer;
     this.direction = { x: 1, y: 0 };
@@ -16,7 +16,7 @@ export class Snake {
     }
   }
 
-  private addSegment(x: number, y: number) {
+  addSegment(x, y) {
     const segment = new PIXI.Graphics();
     segment.beginFill(0x00ff00);
     segment.drawRect(0, 0, this.tileSize, this.tileSize);
@@ -29,7 +29,7 @@ export class Snake {
     this.gameContainer.addChild(segment);
   }
 
-  public move() {
+  move() {
     for (let i = this.segments.length - 1; i > 0; i--) {
       this.segments[i].x = this.segments[i - 1].x;
       this.segments[i].y = this.segments[i - 1].y;
@@ -40,21 +40,21 @@ export class Snake {
     this.segments[0].y += this.direction.y * this.tileSize;
   }
 
-  public setDirection(x: number, y: number) {
+  setDirection(x, y) {
     // Забороняємо зміну напряму на протилежний
     if (x !== -this.direction.x || y !== -this.direction.y) {
       this.direction = { x, y };
     }
   }
 
-  public getHeadPosition() {
+  getHeadPosition() {
     return {
       x: this.segments[0].x / this.tileSize,
       y: this.segments[0].y / this.tileSize,
     };
   }
 
-  public grow() {
+  grow() {
     const lastSegment = this.segments[this.segments.length - 1];
     const newSegment = new PIXI.Graphics();
     newSegment.beginFill(0x00ff00);
@@ -68,7 +68,7 @@ export class Snake {
     this.gameContainer.addChild(newSegment);
   }
 
-  public checkCollision() {
+  checkCollision() {
     const head = this.getHeadPosition();
 
     // Перевірка на зіткнення голови змійки з її тілом
@@ -85,7 +85,7 @@ export class Snake {
     return false;
   }
 
-  public reset() {
+  reset() {
     this.segments.forEach((segment) => {
       this.gameContainer.removeChild(segment);
     });
@@ -99,13 +99,13 @@ export class Snake {
     this.setVisible(false);
   }
 
-  public setVisible(visible: boolean) {
+  setVisible(visible) {
     this.segments.forEach((segment) => {
       segment.visible = visible;
     });
   }
 
-  public setPosition(x: number, y: number) {
+  setPosition(x, y) {
     this.segments[0].x = x * this.tileSize;
     this.segments[0].y = y * this.tileSize;
   }

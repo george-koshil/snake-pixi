@@ -5,22 +5,22 @@ import { GUI } from './GUI';
 import { GameMode } from './GameMode';
 
 export class Game {
-  private app: PIXI.Application;
-  private gui: GUI;
-  private gameContainer: PIXI.Container;
-  private tileSize: number = 20;
-  private fieldSize: number = 20;
-  private snake: Snake;
-  private food: Food;
-  private score: number = 0;
-  private moveCounter: number = 0;
-  private moveInterval: number = 40;
-  private walls: PIXI.Graphics[] = [];
-  private secondFood: Food | null = null;
-  private mode: GameMode;
-  private fieldBackground: PIXI.Graphics;
+   app;
+   gui;
+   gameContainer;
+   tileSize = 20;
+   fieldSize = 20;
+   snake;
+   food;
+   score = 0;
+   moveCounter = 0;
+   moveInterval = 40;
+   walls = [];
+   secondFood= null;
+   mode;
+   fieldBackground;
 
-  constructor(mode: GameMode) {
+  constructor(mode) {
     this.mode = mode;
     this.app = new PIXI.Application({
       width: 800,
@@ -28,7 +28,7 @@ export class Game {
       backgroundColor: 0x1099bb,
     });
 
-    document.body.appendChild(this.app.view as any);
+    document.body.appendChild(this.app.view);
 
     this.gameContainer = new PIXI.Container();
     this.app.stage.addChild(this.gameContainer);
@@ -51,8 +51,8 @@ export class Game {
     this.start();
   }
 
-  private setupGUIEvents() {
-    this.app.stage.on('game-start', (mode: GameMode) => {
+   setupGUIEvents() {
+    this.app.stage.on('game-start', (mode) => {
       this.startGame(mode);
     });
 
@@ -61,7 +61,7 @@ export class Game {
     });
   }
 
-  private createBoundaryWalls() {
+   createBoundaryWalls() {
     for (let x = 0; x < this.fieldSize; x++) {
       this.addWall(x, 0);
       this.addWall(x, this.fieldSize - 1);
@@ -73,7 +73,7 @@ export class Game {
     }
   }
 
-  private createFieldBackground() {
+   createFieldBackground() {
     const fieldColor = 0x006600;
     this.fieldBackground = new PIXI.Graphics();
     this.fieldBackground.beginFill(fieldColor);
@@ -82,7 +82,7 @@ export class Game {
     this.gameContainer.addChildAt(this.fieldBackground, 0);
   }
 
-  private startGame(mode: GameMode) {
+   startGame(mode) {
     this.mode = mode;
     this.snake.reset();
     this.food.spawn();
@@ -101,7 +101,7 @@ export class Game {
     this.app.ticker.start();
   }
 
-  private setupControls() {
+   setupControls() {
     window.addEventListener('keydown', (event) => {
       switch (event.key) {
         case 'ArrowUp':
@@ -120,7 +120,7 @@ export class Game {
     });
   }
 
-  private checkCollisions() {
+   checkCollisions() {
     const snakeHead = this.snake.getHeadPosition();
 
     if (this.mode !== GameMode.NoDie) {
@@ -153,7 +153,7 @@ export class Game {
     }
   }
 
-  private classicModeCollisions(snakeHead: { x: number; y: number }) {
+   classicModeCollisions(snakeHead) {
     const foodPosition = this.food.getPosition();
     if (snakeHead.x === foodPosition.x && snakeHead.y === foodPosition.y) {
       this.snake.grow();
@@ -163,7 +163,7 @@ export class Game {
     }
   }
 
-  private noDieModeCollisions(snakeHead: { x: number; y: number }) {
+   noDieModeCollisions(snakeHead) {
     const foodPosition = this.food.getPosition();
     if (snakeHead.x === foodPosition.x && snakeHead.y === foodPosition.y) {
       this.snake.grow();
@@ -186,7 +186,7 @@ export class Game {
     }
   }
 
-  private wallsModeCollisions(snakeHead: { x: number; y: number }) {
+   wallsModeCollisions(snakeHead) {
     const foodPosition = this.food.getPosition();
     if (snakeHead.x === foodPosition.x && snakeHead.y === foodPosition.y) {
       this.snake.grow();
@@ -207,7 +207,7 @@ export class Game {
     }
   }
 
-  private addWall(x: number, y: number) {
+   addWall(x, y) {
     const wall = new PIXI.Graphics();
     wall.beginFill(0x808080);
     wall.drawRect(0, 0, this.tileSize, this.tileSize);
@@ -218,7 +218,7 @@ export class Game {
     this.gameContainer.addChild(wall);
   }
 
-  private portalModeCollisions(snakeHead: { x: number; y: number }) {
+   portalModeCollisions(snakeHead) {
     const foodPosition = this.food.getPosition();
     const secondFoodPosition = this.secondFood?.getPosition();
 
@@ -243,7 +243,7 @@ export class Game {
     }
   }
 
-  private updateScore() {
+   updateScore() {
     this.gui.updateCurrentScore(this.score);
 
     if (this.mode === GameMode.Speed) {
@@ -251,7 +251,7 @@ export class Game {
     }
   }
 
-  private resetGame() {
+   resetGame() {
     this.snake.reset();
     for (const wall of this.walls) {
       if (this.gameContainer.children.includes(wall)) {
@@ -266,11 +266,11 @@ export class Game {
     this.app.ticker.start();
   }
 
-  private endGame() {
+   endGame() {
     this.app.ticker.stop();
   }
 
-  public start() {
+   start() {
     this.app.ticker.add(() => {
       this.moveCounter++;
       if (this.moveCounter >= this.moveInterval) {
